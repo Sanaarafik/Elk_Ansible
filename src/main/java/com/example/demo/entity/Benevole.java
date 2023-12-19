@@ -12,7 +12,7 @@ public class Benevole {
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;

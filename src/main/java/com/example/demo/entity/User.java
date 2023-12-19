@@ -20,4 +20,13 @@ public class User {
     @Column(name="password")
     private String password;
 
+    @Transient
+    private Boolean isDemandeur;
+
+    @Transient
+    private Boolean isValidator;
+
+    @Transient
+    private Boolean isBenevole;
+
 }

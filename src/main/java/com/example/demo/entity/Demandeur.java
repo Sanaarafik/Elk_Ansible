@@ -12,7 +12,7 @@ public class Demandeur {
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;

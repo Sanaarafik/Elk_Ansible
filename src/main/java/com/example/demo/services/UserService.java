@@ -13,4 +13,10 @@ public interface UserService {
     public abstract void putUser(User user);
 
     public abstract Optional<User> getUserById(long id);
+
+    public abstract void createNewUser(User user);
+
+    public abstract Optional<User> getUserByLogin(String Login);
+
+    public abstract void deleteUser(Long id);
 }
