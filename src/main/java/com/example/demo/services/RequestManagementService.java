@@ -1,7 +1,6 @@
 package com.example.demo.services;
 
-import org.springframework.stereotype.Service;
-
-@Service
-public class RequestManagementService {
+/* Each service has an interface and impl
+* the SerivceImpl gives the implementation of the service*/
+public interface RequestManagementService {
 }

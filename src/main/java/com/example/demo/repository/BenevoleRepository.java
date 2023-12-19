@@ -1,4 +1,9 @@
 package com.example.demo.repository;
 
-public class BenevoleRepository {
+import com.example.demo.entity.Benevole;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface BenevoleRepository extends JpaRepository<Benevole,Long> {
 }

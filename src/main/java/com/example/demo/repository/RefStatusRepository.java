@@ -1,4 +1,9 @@
 package com.example.demo.repository;
 
-public class RefStatusRepository {
+import com.example.demo.entity.RefStatus;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface RefStatusRepository extends JpaRepository<RefStatus,Long> {
 }
