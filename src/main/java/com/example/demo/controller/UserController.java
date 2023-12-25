@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.User;
+import com.example.demo.entityDTO.RoleDTO;
 import com.example.demo.services.UserService;
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +48,12 @@ public class UserController {
         logger.info("in userController : deleteUser");
         userService.deleteUser(id);
         return new ResponseEntity<>(String.format("User %d removed",id),HttpStatus.OK);
+    }
+
+    @PostMapping("user/{id}")
+    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody RoleDTO roleDTO){
+        logger.info("in userController : updateUser");
+        return new ResponseEntity<>(userService.updateUser(id,roleDTO),HttpStatus.OK);
     }
 
 

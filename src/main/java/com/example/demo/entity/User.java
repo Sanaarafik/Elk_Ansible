@@ -29,4 +29,6 @@ public class User {
     @Transient
     private Boolean isBenevole;
 
+
+
 }

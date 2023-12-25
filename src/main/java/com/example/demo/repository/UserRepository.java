@@ -2,9 +2,16 @@ package com.example.demo.repository;
 
 import com.example.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
-    User findUserByLogin(String login);
+    Optional<User> findUserByLogin(String login);
+
+    @Query(value = "Select user_id,login,password from user",nativeQuery = true)
+    List<User> findAllLoginAndId();
 }

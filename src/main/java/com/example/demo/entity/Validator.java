@@ -12,7 +12,7 @@ public class Validator {
     @Column(name = "user_id")
     private Long id;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
