@@ -111,7 +111,9 @@ public class UserServiceImpl implements UserService {
         updatedUser.get().setIsBenevole(roleDTO.getIsBenevole());
 
         if (demandeurRepository.existsById(id)){
-            if(!updatedUser.get().getIsBenevole()){
+            logger.info("user exist in table demandeur");
+            if(!updatedUser.get().getIsDemandeur()){
+                logger.info("deleting user");
                 demandeurRepository.deleteById(id);
             }
         }
