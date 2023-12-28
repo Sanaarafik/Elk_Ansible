@@ -56,5 +56,15 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUser(id,roleDTO),HttpStatus.OK);
     }
 
+    @GetMapping("users/demandeur")
+    public ResponseEntity<Object> getAllDemandeur(){
+        return new ResponseEntity<>(userService.getAllDemandeur(),HttpStatus.OK);
+    }
+
+    @GetMapping("users/benevole")
+    public ResponseEntity<Object> getAllBenevole(){
+        return new ResponseEntity<>(userService.getAllBenevole(),HttpStatus.OK);
+    }
+
 
 }

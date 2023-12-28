@@ -23,4 +23,8 @@ public interface UserService {
     public abstract void deleteUser(Long id);
 
     public Optional<User> updateUser(Long id, RoleDTO roleDTO);
+
+    public abstract Stream<UserDTO> getAllDemandeur();
+
+    public abstract Stream<UserDTO> getAllBenevole();
 }

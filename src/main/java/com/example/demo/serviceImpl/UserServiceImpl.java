@@ -100,43 +100,56 @@ public class UserServiceImpl implements UserService {
     public Optional<User> updateUser(Long id, RoleDTO roleDTO) {
         logger.info("in userService : updateUser");
         Optional<User> updatedUser = getUserById(id);
-
-        logger.info(updatedUser.toString());
         if (updatedUser.isEmpty()){
             logger.error("No user Found");
             return Optional.empty();
         }
         logger.info(roleDTO.toString());
 
-
         updatedUser.get().setIsDemandeur(roleDTO.getIsDemandeur());
         updatedUser.get().setIsValidator(roleDTO.getIsValidator());
         updatedUser.get().setIsBenevole(roleDTO.getIsBenevole());
-        logger.info(updatedUser.toString());
-        if (updatedUser.get().getIsDemandeur()) {
-            Demandeur demandeur = new Demandeur();
-            demandeur.setUser(updatedUser.get());
-            demandeurRepository.save(demandeur);
-        }else {
-            demandeurRepository.deleteById(id);
-        }
-        if (updatedUser.get().getIsValidator()) {
-            Validator validator= new Validator();
-            validator.setUser(updatedUser.get());
-            validatorRepository.save(validator);
-        }else {
-            validatorRepository.deleteById(id);
-        }
-        if (updatedUser.get().getIsBenevole()) {
-            Benevole benevole = new Benevole();
-            benevole.setUser(updatedUser.get());
-            benevoleRepository.save(benevole);
+
+        if (demandeurRepository.existsById(id)){
+            if(!updatedUser.get().getIsBenevole()){
+                demandeurRepository.deleteById(id);
+            }
         }
         else{
-            benevoleRepository.deleteById(id);
+            if(updatedUser.get().getIsDemandeur()){
+                Demandeur new_demandeur = new Demandeur();
+                new_demandeur.setUser(updatedUser.get());
+                demandeurRepository.save(new_demandeur);
+            }
         }
+        if (benevoleRepository.existsById(id)){
+            if(!updatedUser.get().getIsBenevole()){
+                benevoleRepository.deleteById(id);
+            }
+        }
+        else{
+            if(updatedUser.get().getIsBenevole()){
+                Benevole new_benevole = new Benevole();
+                new_benevole.setUser(updatedUser.get());
+                benevoleRepository.save(new_benevole);
+            }
+        }
+
+        logger.info(updatedUser.toString());
+
         logger.info("user updated");
         return updatedUser;
     }
+
+    @Override
+    public Stream<UserDTO> getAllDemandeur() {
+        return userRepository.findAllDemandeur().stream().map(user -> modelMapper.map(user, UserDTO.class));
+    }
+
+    @Override
+    public Stream<UserDTO> getAllBenevole() {
+        return userRepository.findAllBenevole().stream().map(user -> modelMapper.map(user, UserDTO.class));
+    }
+
 
 }
