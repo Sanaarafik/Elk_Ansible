@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.html.HTMLParagraphElement;
 
 @Controller
 @RequestMapping("/users")
@@ -29,6 +30,10 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUserById(@PathVariable long id){
         logger.info("In Controller : getUserById");
+        if(userService.getUserById(id).isEmpty()){
+            logger.error("user not found");
+            return new ResponseEntity<>("User not found", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
         return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
     }
 
@@ -39,16 +44,14 @@ public class UserController {
             userService.createNewUser(user);
             return new ResponseEntity<>("new user Created",HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("Please chose another login",HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>("Please chose another login",HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id){
-        logger.info("in userController : deleteUser");
-        userService.deleteUser(id);
-        return new ResponseEntity<>(String.format("User %d removed",id),HttpStatus.OK);
+        return userService.deleteUser(id);
     }
 
     @PostMapping("update/{id}")

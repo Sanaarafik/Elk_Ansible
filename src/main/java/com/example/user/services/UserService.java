@@ -3,6 +3,7 @@ package com.example.user.services;
 import com.example.user.entity.User;
 import com.example.user.entityDTO.RoleDTO;
 import com.example.user.entityDTO.UserDTO;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -20,7 +21,7 @@ public interface UserService {
 
     public abstract Optional<User> getUserByLogin(String Login);
 
-    public abstract void deleteUser(Long id);
+    public abstract ResponseEntity<Object> deleteUser(Long id);
 
     public Optional<User> updateUser(Long id, RoleDTO roleDTO);
 

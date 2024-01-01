@@ -15,6 +15,8 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -91,8 +93,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    public ResponseEntity<Object> deleteUser(Long id) {
+        if (userRepository.findById(id).isEmpty()){
+            logger.error("User not found !");
+            return new ResponseEntity<>("user not found", HttpStatus.NOT_FOUND);
+        }
+        else {
+            userRepository.deleteById(id);
+            return new ResponseEntity<>(String.format("User %d removed",id),HttpStatus.OK);
+        }
+
     }
 
 
