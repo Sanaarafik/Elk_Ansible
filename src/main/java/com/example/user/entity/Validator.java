@@ -1,18 +1,18 @@
-package com.example.demo.entity;
+package com.example.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
+@Table(name = "validator")
 @Data
-@Table(name = "benevole")
-public class Benevole {
+public class Validator {
 
     @Id
     @Column(name = "user_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;

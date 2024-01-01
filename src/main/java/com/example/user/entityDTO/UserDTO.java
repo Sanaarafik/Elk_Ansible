@@ -1,12 +1,17 @@
-package com.example.demo.entityDTO;
+package com.example.user.entityDTO;
 
 import lombok.Data;
 
 @Data
-public class RoleDTO {
+public class UserDTO {
+    private long id;
+
+    private String login;
+
     private Boolean isDemandeur;
 
     private Boolean isValidator;
 
     private Boolean isBenevole;
+
 }

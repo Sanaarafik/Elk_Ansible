@@ -1,8 +1,8 @@
-package com.example.demo.services;
+package com.example.user.services;
 
-import com.example.demo.entity.User;
-import com.example.demo.entityDTO.RoleDTO;
-import com.example.demo.entityDTO.UserDTO;
+import com.example.user.entity.User;
+import com.example.user.entityDTO.RoleDTO;
+import com.example.user.entityDTO.UserDTO;
 
 import java.util.Optional;
 import java.util.stream.Stream;

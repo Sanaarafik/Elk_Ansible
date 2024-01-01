@@ -1,19 +1,20 @@
-package com.example.demo.entity;
+package com.example.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "validator")
 @Data
-public class Validator {
+@Table(name = "demandeur")
+public class Demandeur {
 
     @Id
     @Column(name = "user_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne()
     @MapsId
     @JoinColumn(name = "user_id")
     private User user;
+
 }
