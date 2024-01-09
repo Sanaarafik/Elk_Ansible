@@ -1,16 +1,11 @@
-package com.example.user.serviceImpl;
+package com.UserService.UserService.ServicesImpl;
 
-import com.example.user.entity.Benevole;
-import com.example.user.entity.Demandeur;
-import com.example.user.entity.User;
-import com.example.user.entity.Validator;
-import com.example.user.entityDTO.RoleDTO;
-import com.example.user.entityDTO.UserDTO;
-import com.example.user.repository.BenevoleRepository;
-import com.example.user.repository.DemandeurRepository;
-import com.example.user.repository.UserRepository;
-import com.example.user.repository.ValidatorRepository;
-import com.example.user.services.UserService;
+import com.UserService.UserService.Entity.*;
+import com.UserService.UserService.EntityDTO.RoleDTO;
+import com.UserService.UserService.EntityDTO.UserDTO;
+import com.UserService.UserService.Repository.*;
+import com.UserService.UserService.Services.UserService;
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +37,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ValidatorRepository validatorRepository;
 
+    @Autowired
+    private ValidatorDemandeurLinkRepository validatorDemandeurLinkRepository;
+
     @Override
     public Stream<UserDTO> getAllUsers() {
         return userRepository.findAllLoginAndId().stream().map(user -> modelMapper.map(user, UserDTO.class));}
@@ -71,17 +69,17 @@ public class UserServiceImpl implements UserService {
             userRepository.save(new_user);
             if (user.getIsDemandeur()) {
                 Demandeur demandeur = new Demandeur();
-                demandeur.setUser(new_user);
+                demandeur.setDemandeur(new_user);
                 demandeurRepository.save(demandeur);
             }
             if (user.getIsValidator()) {
                 Validator validator= new Validator();
-                validator.setUser(new_user);
+                validator.setValidator(new_user);
                 validatorRepository.save(validator);
             }
             if (user.getIsBenevole()) {
                 Benevole benevole = new Benevole();
-                benevole.setUser(new_user);
+                benevole.setBenevole(new_user);
                 benevoleRepository.save(benevole);
             }
         }
@@ -130,7 +128,7 @@ public class UserServiceImpl implements UserService {
         else{
             if(updatedUser.get().getIsDemandeur()){
                 Demandeur new_demandeur = new Demandeur();
-                new_demandeur.setUser(updatedUser.get());
+                new_demandeur.setDemandeur(updatedUser.get());
                 demandeurRepository.save(new_demandeur);
             }
         }
@@ -142,7 +140,7 @@ public class UserServiceImpl implements UserService {
         else{
             if(updatedUser.get().getIsBenevole()){
                 Benevole new_benevole = new Benevole();
-                new_benevole.setUser(updatedUser.get());
+                new_benevole.setBenevole(updatedUser.get());
                 benevoleRepository.save(new_benevole);
             }
         }
@@ -163,9 +161,72 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllBenevole().stream().map(user -> modelMapper.map(user, UserDTO.class));
     }
 
-    public boolean isUserAValidator(Long userId) {
-        return validatorRepository.existsById(userId);
+    @Override
+    public Stream<UserDTO> getAllValidator() {
+        return userRepository.findAllValidator().stream().map(user -> modelMapper.map(user, UserDTO.class));
     }
 
+    @Override
+    @Transactional
+    public ResponseEntity<Object> linkValidatorToDemandeur(Long validatorId, Long demandeurId) {
+        Optional<Validator> validatorOptional = validatorRepository.findById(validatorId);
+        Optional<Demandeur> demandeurOptional = demandeurRepository.findById(demandeurId);
 
+        if (validatorOptional.isEmpty()) {
+            return new ResponseEntity<>("Validator not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (demandeurOptional.isEmpty()) {
+            return new ResponseEntity<>("Demandeur not found", HttpStatus.NOT_FOUND);
+        }
+
+        Validator validator = validatorOptional.get();
+        Demandeur demandeur = demandeurOptional.get();
+
+        if (validatorDemandeurLinkRepository.existsByValidatorAndDemandeur(validator, demandeur)) {
+            return new ResponseEntity<>("Link already exists", HttpStatus.BAD_REQUEST);
+        }
+
+        ValidatorDemandeurLink link = new ValidatorDemandeurLink();
+        link.setId(new ValidatorDemandeurLinkId(validatorId, demandeurId));
+        link.setValidator(validator);
+        link.setDemandeur(demandeur);
+
+
+        validatorDemandeurLinkRepository.save(link);
+
+        return new ResponseEntity<>(String.format("Validator with ID %d linked to Demandeur with ID %d", validatorId, demandeurId), HttpStatus.CREATED);
+    }
+
+    @Override
+    public Boolean getLink(Long validatorId, Long demandeurId) {
+        Optional<Validator> validatorOptional = validatorRepository.findById(validatorId);
+        Optional<Demandeur> demandeurOptional = demandeurRepository.findById(demandeurId);
+
+        if (validatorOptional.isEmpty()) {
+            return Boolean.FALSE;
+        }
+
+        if (demandeurOptional.isEmpty()) {
+            return Boolean.FALSE;
+        }
+        Validator validator = validatorOptional.get();
+        Demandeur demandeur = demandeurOptional.get();
+
+        return validatorDemandeurLinkRepository.existsByValidatorAndDemandeur(validator,demandeur);
+    }
+
+    @Override
+    public Boolean isUserAValidator(Long userId) {
+        return validatorRepository.existsById(userId);
+    }
+    @Override
+    public Boolean isUserADemandeur(Long userId) {
+        return demandeurRepository.existsById(userId);
+    }
+
+    @Override
+    public Boolean isUserABenevole(Long userId) {
+        return benevoleRepository.existsById(userId);
+    }
 }

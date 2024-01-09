@@ -1,11 +1,10 @@
-package com.example.user.repository;
+package com.UserService.UserService.Repository;
 
-import com.example.user.entity.Validator;
+import com.UserService.UserService.Entity.Benevole;
+import com.UserService.UserService.Entity.Validator;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ValidatorRepository extends JpaRepository<Validator,Long> {
-    boolean existsById(Long id);
-
 }

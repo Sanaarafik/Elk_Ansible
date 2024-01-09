@@ -1,8 +1,8 @@
-package com.example.user.controller;
+package com.UserService.UserService.Controller;
 
-import com.example.user.entity.User;
-import com.example.user.entityDTO.RoleDTO;
-import com.example.user.services.UserService;
+import com.UserService.UserService.Entity.User;
+import com.UserService.UserService.EntityDTO.RoleDTO;
+import com.UserService.UserService.Services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,21 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.w3c.dom.html.HTMLParagraphElement;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
-
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-
-    public final UserService userService;
-
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    public UserService userService;
 
     @GetMapping("/all")
     public ResponseEntity<Object> getAllUsers() {
@@ -51,7 +44,6 @@ public class UserController {
         }else{
             return new ResponseEntity<>("Please chose another login",HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @DeleteMapping("delete/{id}")
@@ -75,11 +67,34 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllBenevole(),HttpStatus.OK);
     }
 
-    @GetMapping("/check-validator/{userId}")
-    public ResponseEntity<String> checkIfUserIsValidator(@PathVariable Long userId) {
-        boolean isValidator = userService.isUserAValidator(userId);
-        return ResponseEntity.ok(isValidator ? "User is a validator" : "User is not a validator");
+    @GetMapping("/allvalidator")
+    public ResponseEntity<Object> getAllValidator(){
+        return new ResponseEntity<>(userService.getAllValidator(),HttpStatus.OK);
     }
 
+    @PostMapping("/link")
+    public ResponseEntity<Object> createLink(@RequestParam Long validatorId, @RequestParam Long demandeurId) {
+        return userService.linkValidatorToDemandeur(validatorId, demandeurId);
+    }
+
+    @GetMapping("/link")
+    public ResponseEntity<Object> getLink(@RequestParam Long validatorId , @RequestParam Long demandeurId ){
+        return new ResponseEntity<>(userService.getLink(validatorId,demandeurId),HttpStatus.OK);
+    }
+
+    @GetMapping("/validator/{userId}")
+    public ResponseEntity<Object> checkIfUserIsValidator(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.isUserAValidator(userId),HttpStatus.OK);
+    }
+
+    @GetMapping("/demandeur/{userId}")
+    public ResponseEntity<Object> checkIfUserIsDemandeur(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.isUserADemandeur(userId),HttpStatus.OK);
+    }
+
+    @GetMapping("/benevole/{userId}")
+    public ResponseEntity<Object> checkIfUserIsBenevole(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.isUserABenevole(userId),HttpStatus.OK);
+    }
 
 }
